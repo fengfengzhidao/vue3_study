@@ -4,13 +4,12 @@ const props = defineProps({
     required: true,
     type: String
   },
-  gender: {
-    type: Boolean
-  },
   age: {
-    required: false,
     type: Number,
     default: 18
+  },
+  isMall: {
+    type: Boolean,
   },
   user: {
     type: Object,
@@ -24,10 +23,14 @@ const props = defineProps({
     }
   }
 })
+
 </script>
 
 <template>
-<div>子组件1{{ props }}</div>
+  <div>
+    子组件1
+    {{ props }}
+  </div>
 </template>
 
 <style scoped>

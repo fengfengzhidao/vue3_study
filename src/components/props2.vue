@@ -1,24 +1,26 @@
 <script setup lang="ts">
-interface UserType {
-  name: string
-  age: number
-}
 
 interface Props {
   name: string
-  gender?: boolean
   age?: number
-  user?: UserType
+  isMall?: boolean
+  user?: object
   status?: 'success' | 'error' | 'warning'
 }
 
-const props = defineProps<Props>()
-const {age = 18} = props
+
+const props = withDefaults(defineProps<Props>(), {
+  age: 18
+})
+const {age = 20} = props
 
 </script>
 
 <template>
-  <div>子组件2{{ props }} age:{{ age }}</div>
+  <div>
+    子组件2
+    {{ props }} age: {{ age }}
+  </div>
 </template>
 
 <style scoped>

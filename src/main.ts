@@ -14,18 +14,19 @@ app.use(router)
 // v-debounce
 app.directive("debounce", {
     mounted(el: HTMLElement, binding){
-        let timer = null
         const timeout = binding.arg || 500
-
-        el.addEventListener("click", ()=>{
-            if (timer){
-                clearTimeout(timer)
+        el.func = ()=>{
+            if (el.timer){
+                clearTimeout(el.timer)
             }
-            timer = setTimeout(binding.value, timeout)
-        })
-    },
-    beforeUnmount(){
+            el.timer = setTimeout(binding.value, timeout)
+        }
 
+        el.addEventListener("click", el.func)
+    },
+    beforeUnmount(el:HTMLElement, binding){
+        clearTimeout(el.timer)
+        el.removeEventListener("click", el.func)
     }
 })
 

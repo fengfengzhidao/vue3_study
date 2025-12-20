@@ -5,6 +5,7 @@ import infoHome from '../views/admin/info.vue'
 import AdminView from '../views/admin/index.vue'
 import type {RouteRecordRaw} from "vue-router";
 import {Message} from "@arco-design/web-vue";
+import {getRouteApi} from "@/api/route_api.ts";
 
 const routes: Readonly<RouteRecordRaw[]> = [
     {
@@ -21,7 +22,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
         path: "/admin",
         name: "admin",
         component: AdminView,
-        meta:{
+        meta: {
             title: "后台",
             login: true
         },
@@ -30,7 +31,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
                 path: "", // /admin
                 name: "adminHome",
                 component: AdminHome,
-                meta:{
+                meta: {
                     title: "后台Home"
                 },
             },
@@ -38,7 +39,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
                 path: "info", // /admin/info
                 name: "infoHome",
                 component: infoHome,
-                meta:{
+                meta: {
                     title: "后台Info",
                     login: false
                 },
@@ -70,10 +71,10 @@ const routes: Readonly<RouteRecordRaw[]> = [
         path: "/article/:id",
         name: "articleDetail",
         component: () => import("@/views/article_detail.vue"),
-        beforeEnter(to, form, next){
+        beforeEnter(to, form, next) {
             console.log("组件内 to", to)
             const id = Number(to.params.id)
-            if (isNaN(id)){
+            if (isNaN(id)) {
                 Message.warning("参数错误")
                 next(form)
                 return
@@ -96,11 +97,11 @@ const routes: Readonly<RouteRecordRaw[]> = [
         name: "login",
         component: () => import("@/views/login.vue"),
     },
-    {
-        path: "/:pathMatch(.*)*", // /admin/info
-        name: "notfound",
-        component: () => import("@/views/404.vue"),
-    }
+    // {
+    //     path: "/:pathMatch(.*)*", // /admin/info
+    //     name: "notfound",
+    //     component: () => import("@/views/404.vue"),
+    // }
 ]
 
 
@@ -110,14 +111,57 @@ const router = createRouter({
 })
 
 
+// 动态添加路由  /route
+router.addRoute({
+    path: "/route", // /admin/info
+    name: "route",
+    component: () => import("@/views/route.vue"),
+})
+// 添加到admin1这个路由组里面  // /admin1/route
+router.addRoute("admin1", {
+    path: "route", // /admin/info
+    name: "admin1Route",
+    component: () => import("@/views/route.vue"),
+})
+
+let hasLoadRoute = false
+const viewsFile = import.meta.glob("@/views/**/*")
+
+
 // 路由前置守卫
-router.beforeEach((to, from, next)=>{
+router.beforeEach(async (to, from, next) => {
     console.log("前置 from", from)
     console.log("前置 to", to)
-    if (to.meta.login){
+    if (!hasLoadRoute) {
+        // 加载动态路由
+        const res = await getRouteApi()
+        const route = res.data[0]
+
+        const component = viewsFile[`/src/${route.component}`]
+        if (!component) {
+            return next("/404")
+        }
+
+        router.addRoute({
+            name: route.name,
+            path: route.path,
+            component: component
+        })
+
+
+        router.addRoute({
+            path: "/:pathMatch(.*)*", // /admin/info
+            name: "notfound",
+            component: () => import("@/views/404.vue"),
+        })
+        hasLoadRoute = true
+        next({...to, replace: true})
+        return
+    }
+    if (to.meta.login) {
         // 这个路由需要登录
         const token = localStorage.getItem("token")
-        if (!token){
+        if (!token) {
             Message.warning("需要登录")
             next("/login")
             return
@@ -127,7 +171,7 @@ router.beforeEach((to, from, next)=>{
 })
 
 // 路由后置守卫
-router.afterEach((to, from)=>{
+router.afterEach((to, from) => {
     console.log("后置 from", from)
     console.log("后置 to", to)
 

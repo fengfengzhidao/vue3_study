@@ -27,6 +27,13 @@
         <a href="javascript:void 0" @click="goRouter3('adminHome')">admin Home</a>
       </div>
 
+      <div>
+        动态路由
+        <a href="javascript:void 0" @click="goRouter2('/route')">route</a>
+        <a href="javascript:void 0" @click="goRouter2('/admin1/route')">admin1 route</a>
+        <a href="javascript:void 0" @click="goRouter2('/route1')">route1</a>
+      </div>
+
       <div class="view">
         <router-view></router-view>
       </div>

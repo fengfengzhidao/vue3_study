@@ -62,6 +62,11 @@ const routes: Readonly<RouteRecordRaw[]> = [
         ]
     },
     {
+        path: "/article/:date(\\d{4}-\\d{2}-\\d{2})",
+        name: "articleDate",
+        component: () => import("@/views/articleDate.vue"),
+    },
+    {
         path: "/article/:id",
         name: "articleDetail",
         component: () => import("@/views/article_detail.vue"),
@@ -77,9 +82,24 @@ const routes: Readonly<RouteRecordRaw[]> = [
         }
     },
     {
+        path: "/user/:id(\\d+)",
+        name: "userDetail",
+        component: () => import("@/views/userDetail.vue"),
+    },
+    {
+        path: "/search",
+        name: "search",
+        component: () => import("@/views/search.vue"),
+    },
+    {
         path: "/login", // /admin/info
         name: "login",
         component: () => import("@/views/login.vue"),
+    },
+    {
+        path: "/:pathMatch(.*)*", // /admin/info
+        name: "notfound",
+        component: () => import("@/views/404.vue"),
     }
 ]
 

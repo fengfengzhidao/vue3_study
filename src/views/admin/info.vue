@@ -2,12 +2,15 @@
 import {useRoute} from "vue-router";
 
 const route = useRoute()
-console.log(route.query) // 查询参数
-
+console.log("admin info", route.meta)
 </script>
 
 <template>
- <div>
-   home
- </div>
+  <div>
+    info
+  </div>
 </template>
+
+<style scoped>
+
+</style>

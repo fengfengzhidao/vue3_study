@@ -130,8 +130,8 @@ const viewsFile = import.meta.glob("@/views/**/*")
 
 // 路由前置守卫
 router.beforeEach(async (to, from, next) => {
-    console.log("前置 from", from)
-    console.log("前置 to", to)
+    // console.log("前置 from", from)
+    // console.log("前置 to", to)
     if (!hasLoadRoute) {
         // 加载动态路由
         const res = await getRouteApi()
@@ -172,8 +172,8 @@ router.beforeEach(async (to, from, next) => {
 
 // 路由后置守卫
 router.afterEach((to, from) => {
-    console.log("后置 from", from)
-    console.log("后置 to", to)
+    // console.log("后置 from", from)
+    // console.log("后置 to", to)
 
 })
 
